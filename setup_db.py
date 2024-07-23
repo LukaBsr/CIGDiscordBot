@@ -4,13 +4,15 @@ import sqlite3
 conn = sqlite3.connect('rpg_bot.db')
 cursor = conn.cursor()
 
-# Create users table
+# Create users table with additional columns for max power and power regeneration
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
-    level INTEGER NOT NULL,
-    xp INTEGER NOT NULL,
-    power_remaining INTEGER NOT NULL
+    level INTEGER NOT NULL DEFAULT 1,
+    xp INTEGER NOT NULL DEFAULT 0,
+    power_remaining INTEGER NOT NULL DEFAULT 100,
+    max_power INTEGER NOT NULL DEFAULT 100,  -- Added max_power
+    power_regeneration REAL NOT NULL DEFAULT 1.00  -- Added power_regeneration
 )
 ''')
 
