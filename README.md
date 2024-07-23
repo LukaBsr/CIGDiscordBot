@@ -1,2 +1,27 @@
-# CIGDiscordBot
-This is my first Discord bot. Simply RPG with some fun stuff and tryhard to play with friends.
+# Discord RPG Bot
+
+A Discord bot for playing a text-based RPG game with your friends.
+
+## Features
+
+- Character creation
+- Basic combat system
+- Leveling up
+
+## Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/LukaBsr/CIGDiscordBot.git
+   cd CIGDiscordBot.git
+   ```
+
+2. **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+**COMMING SOON**
+
+## Usage
+
+**COMMING SOON**
