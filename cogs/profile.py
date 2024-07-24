@@ -1,6 +1,9 @@
 import sqlite3
+import logging
 from discord.ext import commands
 import discord
+
+logger = logging.getLogger(__name__)
 
 class ProfileCog(commands.Cog):
     def __init__(self, bot):
@@ -12,7 +15,7 @@ class ProfileCog(commands.Cog):
         
         cursor.execute('SELECT level, xp, power_remaining, max_power, power_regeneration FROM users WHERE user_id = ?', (user_id,))
         profile = cursor.fetchone()
-        print(f"Fetched profile data: {profile}")  # Debug: Check the fetched profile data
+        logger.debug(f"Fetched profile data: {profile}")  # Debug: Check the fetched profile data
         if profile is None:
             profile = (1, 0, 100, 100, 1.00)  # Default profile if not found
         level, xp, power_remaining, max_power, power_regeneration = profile
@@ -44,7 +47,7 @@ class ProfileCog(commands.Cog):
         user_id = user.id
         profile = self.get_user_profile(user_id)
         
-        print(f"Profile fetched for {user_id}: {profile}")  # Debug: Confirm profile fetch
+        logger.info(f"Profile fetched for {user_id}: {profile}")  # Debug: Confirm profile fetch
 
         ores_list = '\n'.join(f'{ore}: {amount}' for ore, amount in profile['ores'].items())
 
@@ -78,12 +81,6 @@ class ProfileCog(commands.Cog):
         embed.add_field(name='Tools', value='No tools available yet.', inline=False)
 
         await ctx.send(embed=embed)
-
-    @profile.error
-    async def profile_error(self, ctx, error):
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("Member not found. Please make sure to mention a valid user.")
-
 
 # Setup function to add the cog to the bot
 async def setup(bot):
