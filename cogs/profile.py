@@ -65,7 +65,7 @@ class ProfileCog(commands.Cog):
         embed.timestamp = ctx.message.created_at
 
         embed.add_field(name='Level', value=profile['level'], inline=True)
-        embed.add_field(name='Power', value=f'{profile["power_remaining"]}/{profile["max_power"]} [{power_regeneration}/m]', inline=True)
+        embed.add_field(name='Power', value=f'{profile["power_remaining"]:.0f}/{profile["max_power"]} [{power_regeneration}/m]', inline=True)
         embed.add_field(name='XP', value=f'{current_xp}/{xp_needed} XP', inline=True)
         embed.add_field(name='XP Progress', value=f'[{xp_progress}]', inline=True)
 

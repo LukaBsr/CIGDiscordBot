@@ -28,8 +28,8 @@ class AdminCog(commands.Cog):
             new_xp -= self.get_xp_for_level(level)
             level += 1
             print(f"Level up! New level: {level}")  # Debug
-            max_power = 100 + 5 * (level - 1)
-            power_regeneration = 1.00 + 0.1 * (level - 1)
+            max_power = 100 + 10 * (level - 1)
+            power_regeneration = 1.00 + 0.05 * (level - 1)
             cursor.execute('UPDATE users SET level = ?, xp = ?, max_power = ?, power_regeneration = ? WHERE user_id = ?',
                            (level, new_xp, max_power, power_regeneration, user_id))
             conn.commit()
