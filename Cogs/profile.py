@@ -1,7 +1,9 @@
-import sqlite3
-import logging
-from discord.ext import commands
 import discord
+# Cogs/profile.py
+from discord.ext import commands
+import logging
+from Database.db_utils import get_user_profile
+from Cogs.utils import get_xp_for_level
 
 logger = logging.getLogger(__name__)
 
@@ -9,50 +11,22 @@ class ProfileCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def get_user_profile(self, user_id):
-        conn = sqlite3.connect('rpg_bot.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('SELECT level, xp, power_remaining, max_power, power_regeneration FROM users WHERE user_id = ?', (user_id,))
-        profile = cursor.fetchone()
-        logger.debug(f"Fetched profile data: {profile}")  # Debug: Check the fetched profile data
-        if profile is None:
-            profile = (1, 0, 100, 100, 1.00)  # Default profile if not found
-        level, xp, power_remaining, max_power, power_regeneration = profile
-        
-        cursor.execute('SELECT ore_name, amount FROM ores WHERE user_id = ?', (user_id,))
-        ores = cursor.fetchall()
-        ores_dict = dict(ores)
-        
-        conn.close()
-        return {
-            'level': level,
-            'xp': xp,
-            'power_remaining': power_remaining,
-            'max_power': max_power,
-            'power_regeneration': power_regeneration,
-            'ores': ores_dict
-        }
-
     def get_progress_bar(self, current, max_val, length=20):
         progress = int((current / max_val) * length)
         return '█' * progress + '░' * (length - progress)
-
-    def get_xp_for_level(self, level):
-        return 100 + 20 * (level - 1)
 
     @commands.command(name='profile')
     async def profile(self, ctx, member: discord.Member = None):
         user = member or ctx.author
         user_id = user.id
-        profile = self.get_user_profile(user_id)
         
-        logger.info(f"Profile fetched for {user_id}: {profile}")  # Debug: Confirm profile fetch
+        profile = await get_user_profile(user_id)
+        logger.info(f"Profile fetched for {user_id}: {profile}")  # Info log for profile fetch
 
         ores_list = '\n'.join(f'{ore}: {amount}' for ore, amount in profile['ores'].items())
 
         # Calculate XP needed for current and next level
-        xp_needed = self.get_xp_for_level(profile['level'])
+        xp_needed = get_xp_for_level(profile['level'])
         current_xp = profile["xp"]
         xp_progress = self.get_progress_bar(current_xp, xp_needed)
 
@@ -81,6 +55,7 @@ class ProfileCog(commands.Cog):
         embed.add_field(name='Tools', value='No tools available yet.', inline=False)
 
         await ctx.send(embed=embed)
+
 
 # Setup function to add the cog to the bot
 async def setup(bot):
